@@ -14,7 +14,8 @@ import startConnectionTimeout from '../startConnectionTimeout';
 
 const areGlobalsAccessible = () => {
   try {
-    clearTimeout();
+    let c = clearTimeout as any;
+    c();
   } catch (e) {
     return false;
   }
@@ -51,6 +52,8 @@ type Connection<TCallSender extends object = CallSender> = {
    * You may call this even before a connection has been established.
    */
   destroy: Function;
+
+  getOrigin: Function;
 };
 
 /**
@@ -64,6 +67,7 @@ export default <TCallSender extends object = CallSender>(
   const destructor = createDestructor('Child', log);
   const { destroy, onDestroy } = destructor;
   const serializedMethods = serializeMethods(methods);
+  let origin = '';
 
   const handleSynAckMessage = handleSynAckMessageFactory(
     parentOrigin,
@@ -84,6 +88,16 @@ export default <TCallSender extends object = CallSender>(
     (resolve, reject) => {
       const stopConnectionTimeout = startConnectionTimeout(timeout, destroy);
       const handleMessage = (event: MessageEvent) => {
+        if (!origin) {
+          if (event.data.penpal === MessageType.SynAck) {
+            origin = event.origin;
+          }
+        } else {
+          if (origin !== event.origin) {
+            throw 'multiple origins unsupported - origin set to ' + origin;
+          }
+        }
+
         // Under niche scenarios, we get into this function after
         // the iframe has been removed from the DOM. In Edge, this
         // results in "Object expected" errors being thrown when we
@@ -130,6 +144,9 @@ export default <TCallSender extends object = CallSender>(
     destroy() {
       // Don't allow consumer to pass an error into destroy.
       destroy();
+    },
+    getOrigin() {
+      return origin;
     },
   };
 };

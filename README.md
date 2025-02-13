@@ -8,6 +8,8 @@
 
 # Penpal
 
+This is a fork from the main penpal library to add access to parentOrigin for handling different behaviours depending on the parent origin instead of outright message filtering.
+
 Penpal is a promise-based library for securely communicating with iframes via postMessage. The parent window can call methods exposed by iframes, pass arguments, and receive a return value. Similarly, iframes can call methods exposed by the parent window, pass arguments, and receive a return value. Easy peasy.
 
 This library has no dependencies.
