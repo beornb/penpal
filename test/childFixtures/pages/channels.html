@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test Iframe</title>
+  </head>
+  <body>
+    Test Iframe
+
+    <script>
+      window.onerror = function () {
+        console.log.apply(console, arguments);
+      };
+    </script>
+    <script src="/penpal.js"></script>
+    <script>
+      let channelBParent;
+
+      const channelBMessenger = new Penpal.WindowMessenger({
+        remoteWindow: window.parent,
+        allowedOrigins: ['*'],
+      });
+
+      const channelBMethods = {
+        getChannel() {
+          return 'B';
+        },
+        getChannelFromParent() {
+          return channelBParent.getChannel();
+        },
+      };
+
+      Penpal.connect({
+        messenger: channelBMessenger,
+        channel: 'B',
+        methods: channelBMethods,
+        log: Penpal.debug('Child Connection B'),
+      }).promise.then((parent) => {
+        channelBParent = parent;
+      });
+
+      let channelAParent;
+
+      const channelAMessenger = new Penpal.WindowMessenger({
+        remoteWindow: window.parent,
+        allowedOrigins: ['*'],
+      });
+
+      const channelAMethods = {
+        getChannel() {
+          return 'A';
+        },
+        getChannelFromParent() {
+          return channelAParent.getChannel();
+        },
+      };
+
+      Penpal.connect({
+        messenger: channelAMessenger,
+        channel: 'A',
+        methods: channelAMethods,
+        log: Penpal.debug('Child Connection A'),
+      }).promise.then((parent) => {
+        channelAParent = parent;
+      });
+    </script>
+  </body>
+</html>

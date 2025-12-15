@@ -2,14 +2,20 @@
 <html>
   <head>
     <script src="../../../dist/penpal.js"></script>
-    <script type="text/javascript">
-      Penpal.connectToParent({
+    <script>
+      const messenger = new Penpal.WindowMessenger({
+        remoteWindow: window.parent,
+        allowedOrigins: ['*'],
+      });
+
+      Penpal.connect({
+        messenger,
         methods: {
           multiply: function (num1, num2) {
             return num1 * num2;
           },
         },
-        debug: true,
+        log: Penpal.debug('Child'),
       });
     </script>
   </head>
