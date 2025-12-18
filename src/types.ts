@@ -32,6 +32,8 @@ export type Connection<TMethods extends Methods = Methods> = {
    * You may call this even before a connection has been established.
    */
   destroy: () => void;
+
+  getOrigin: () => string;
 };
 
 /**

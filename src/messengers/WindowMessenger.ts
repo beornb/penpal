@@ -127,6 +127,10 @@ class WindowMessenger implements Messenger {
     this.#messageCallbacks.clear();
   };
 
+  getConcreteRemoteOrigin = (): string | undefined => {
+    return this.#concreteRemoteOrigin;
+  };
+
   #isAllowedOrigin = (origin: string) => {
     return this.#allowedOrigins.some((allowedOrigin) =>
       allowedOrigin instanceof RegExp

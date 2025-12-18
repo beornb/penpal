@@ -120,6 +120,9 @@ const connect = <TMethods extends Methods>({
     destroy: () => {
       destroyConnection(true);
     },
+    getOrigin() {
+      return messenger.getConcreteRemoteOrigin?.() || '';
+    },
   };
 };
 

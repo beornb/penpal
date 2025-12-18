@@ -13,6 +13,7 @@ interface Messenger {
   removeMessageHandler: (callback: MessageHandler) => void;
   initialize: (options: InitializeMessengerOptions) => void;
   destroy: () => void;
+  getConcreteRemoteOrigin?: () => string | undefined;
 }
 
 export default Messenger;
